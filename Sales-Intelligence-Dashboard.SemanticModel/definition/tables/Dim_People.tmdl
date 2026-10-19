@@ -1,0 +1,49 @@
+table Dim_People
+	lineageTag: b0eb88b5-6066-4103-97d2-1c4ff95d0c5b
+
+	column BusinessEntityID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 7556e6e7-34eb-421c-a218-ca92efc7e662
+		summarizeBy: none
+		sourceColumn: BusinessEntityID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstName
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(50)
+		lineageTag: 11f08258-cd2d-4503-b9c3-eaeecf69ce8d
+		summarizeBy: none
+		sourceColumn: FirstName
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastName
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(50)
+		lineageTag: 1d181e32-28fe-4fc5-a5b7-114b72da7ac6
+		summarizeBy: none
+		sourceColumn: LastName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_People = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Person_Person = AdventureWorks2025{[Schema="Person",Item="Person"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(Person_Person,{"BusinessEntityID", "FirstName", "LastName"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

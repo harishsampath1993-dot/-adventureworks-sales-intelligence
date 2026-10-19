@@ -1,0 +1,107 @@
+table Fact_Sales_Header
+	lineageTag: 4408044c-4318-46b2-8781-0441bc38598d
+
+	column OrderDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 313fd6f6-22ae-45ab-b0de-f4019495def4
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: 117b9284-7605-4187-9454-4d8ae540004e
+		summarizeBy: none
+		sourceColumn: SalesOrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b63470e-3b7d-4aea-a495-41316eb77544
+		summarizeBy: count
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: fe274e7c-ad80-4a02-aa08-cfb9cc8ad65a
+		summarizeBy: none
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderNumber
+		dataType: string
+		lineageTag: 7d2971ba-4b42-42d6-892d-a5700794d115
+		summarizeBy: none
+		sourceColumn: SalesOrderNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubTotal
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 00ae9249-b5f9-4bfb-9e6f-222255ac31fa
+		summarizeBy: sum
+		sourceColumn: SubTotal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column TaxAmt
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 5295b945-edd7-401e-adfa-8abf9b004679
+		summarizeBy: sum
+		sourceColumn: TaxAmt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column Freight
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 75525949-0dcb-48da-9a84-027258d35214
+		summarizeBy: sum
+		sourceColumn: Freight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column TotalDue
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: be8aa82f-a2ca-4764-b42c-640396595ed6
+		summarizeBy: sum
+		sourceColumn: TotalDue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	partition Fact_Sales_Header = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Sales_SalesOrderHeader = AdventureWorks2025{[Schema="Sales",Item="SalesOrderHeader"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(Sales_SalesOrderHeader,{"OrderDate", "SalesOrderID", "CustomerID", "TerritoryID", "SalesOrderNumber", "SubTotal", "TaxAmt", "Freight", "TotalDue"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each true)
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

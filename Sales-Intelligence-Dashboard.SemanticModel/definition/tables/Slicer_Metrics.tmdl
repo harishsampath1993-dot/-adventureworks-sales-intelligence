@@ -1,0 +1,22 @@
+table Slicer_Metrics
+	lineageTag: 5460a730-5b05-4794-84c5-11366e7ccab6
+
+	column 'Metric Name'
+		dataType: string
+		lineageTag: d45b7567-150f-4861-bb6e-ff5fd8ce2dc7
+		summarizeBy: none
+		sourceColumn: Metric Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Slicer_Metrics = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCkotS80rTVWK1YlW8i9KSS0qVoqNBQA=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Metric Name" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Metric Name", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

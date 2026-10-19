@@ -1,0 +1,120 @@
+table Dim_Products
+	lineageTag: 2a2d8234-91e9-46e3-a229-a0109ae52b22
+
+	column ProductID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: ed2545e6-9021-4698-8582-f272192fef0d
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(50)
+		lineageTag: 49b89bbe-e3eb-48e0-8132-c7dbab78e195
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductNumber
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(25)
+		lineageTag: 0d261225-f480-46b6-bfbe-e91fc9041099
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		sourceProviderType: nvarchar(15)
+		lineageTag: a85c0e6b-793a-43ad-9ebb-a57f839af39e
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column StandardCost
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 7f0d80a0-85c2-49e9-9933-429f625602f3
+		summarizeBy: none
+		sourceColumn: StandardCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column ListPrice
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 121ad979-3f45-49ec-b20b-f8d368aba76c
+		summarizeBy: none
+		sourceColumn: ListPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column Size
+		dataType: string
+		sourceProviderType: nvarchar(5)
+		lineageTag: edd3e6bd-4a7f-453a-b069-0e8a58055db2
+		summarizeBy: none
+		sourceColumn: Size
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductLine
+		dataType: string
+		sourceProviderType: nchar
+		lineageTag: ca295d3a-d77e-4cbb-8385-3c8c9b293f36
+		summarizeBy: none
+		sourceColumn: ProductLine
+
+		annotation SummarizationSetBy = Automatic
+
+	column Class
+		dataType: string
+		sourceProviderType: nchar
+		lineageTag: fe89f26e-0f08-44e0-98d6-da9f5e617e97
+		summarizeBy: none
+		sourceColumn: Class
+
+		annotation SummarizationSetBy = Automatic
+
+	column Style
+		dataType: string
+		sourceProviderType: nchar
+		lineageTag: cb774d1f-3fa3-4367-91a9-c60823f06852
+		summarizeBy: none
+		sourceColumn: Style
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Products = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Production_Product = AdventureWorks2025{[Schema="Production",Item="Product"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(Production_Product,{"ProductID", "Name", "ProductNumber", "Color", "StandardCost", "ListPrice", "Size", "ProductLine", "Class", "Style"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

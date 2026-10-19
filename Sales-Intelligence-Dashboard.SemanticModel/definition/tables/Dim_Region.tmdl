@@ -1,0 +1,131 @@
+table Dim_Region
+	lineageTag: 40f1ca92-ff00-41fe-ac17-06ea391928d6
+
+	column TerritoryID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 8f452b46-6c8c-4ada-a1ae-0eb11490b3ba
+		summarizeBy: none
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(50)
+		lineageTag: 1bf3b7de-2bab-4129-b09a-a0621e6492d9
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryRegionCode
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(3)
+		lineageTag: ac4e0329-6dd7-4c3a-8a71-bc5d90ef0b89
+		summarizeBy: none
+		sourceColumn: CountryRegionCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column Group
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(50)
+		lineageTag: 64cad149-7ed5-43c3-885e-da50885d6266
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesYTD
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 1d20be6d-d4e7-4c7f-b17e-d8567fb08ae6
+		summarizeBy: none
+		sourceColumn: SalesYTD
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column SalesLastYear
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 0f07d020-c717-4b12-bce2-c6b459e6c0ee
+		summarizeBy: none
+		sourceColumn: SalesLastYear
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column CostYTD
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 30b96d87-f83c-4986-8a67-8598526324f4
+		summarizeBy: none
+		sourceColumn: CostYTD
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column CostLastYear
+		dataType: decimal
+		isNullable: false
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		sourceProviderType: money
+		lineageTag: 0f943cf7-172c-491c-b29b-26be60902af9
+		summarizeBy: none
+		sourceColumn: CostLastYear
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column rowguid
+		dataType: string
+		isNullable: false
+		sourceProviderType: uniqueidentifier
+		lineageTag: 67da410d-786f-4b6a-8fca-e6ebee0e74b4
+		summarizeBy: none
+		sourceColumn: rowguid
+
+		annotation SummarizationSetBy = Automatic
+
+	column ModifiedDate
+		dataType: dateTime
+		isNullable: false
+		formatString: General Date
+		sourceProviderType: datetime
+		lineageTag: fd83aad0-7f38-4b42-85f4-5bd79044af72
+		summarizeBy: none
+		sourceColumn: ModifiedDate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Region = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Sales_SalesTerritory = AdventureWorks2025{[Schema="Sales",Item="SalesTerritory"]}[Data]
+				in
+				    Sales_SalesTerritory
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

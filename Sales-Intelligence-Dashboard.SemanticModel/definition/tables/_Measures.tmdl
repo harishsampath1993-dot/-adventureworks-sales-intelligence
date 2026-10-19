@@ -1,0 +1,113 @@
+table _Measures
+	lineageTag: 0d61e4d5-9b29-4a55-a023-89b04007c71a
+
+	measure 'Total Revenue' = ```
+			SUM(Fact_Sales_Detail[LineTotal])
+			
+			```
+		lineageTag: 17d9e829-1933-4d08-aab4-150369c5f6c3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Orders' = ```
+			DISTINCTCOUNT(Fact_Sales_Header[SalesOrderID])
+			
+			```
+		formatString: 0
+		lineageTag: b1fd3e66-b6df-4db4-8e99-2dfb36698a61
+
+	measure 'Total Freight' = ```
+			SUM(Fact_Sales_Header[Freight])
+			
+			```
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 72731c79-732c-45df-bd14-b67affbfdf57
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	measure 'Rolling 12M Revenue' = ```
+			
+			CALCULATE(
+			    [Total Revenue],
+			    DATESINPERIOD(
+			        Dim_Date[Date], 
+			        MAX(Dim_Date[Date]), 
+			        -12, 
+			        MONTH
+			    )
+			)
+			
+			```
+		lineageTag: 348d1e61-26f2-41ea-a144-4ca48e2de0bf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue LY' = ```
+			
+			CALCULATE(
+			    [Total Revenue], 
+			    SAMEPERIODLASTYEAR(Dim_Date[Date])
+			)
+			
+			```
+		lineageTag: 044cc0ed-c010-43d8-b5e5-59d91c2948c2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YoY Revenue Growth %' = ```
+			
+			DIVIDE(
+			    [Total Revenue] - [Revenue LY], 
+			    [Revenue LY], 
+			    0
+			)
+			
+			```
+		lineageTag: ba3ee64b-4fd6-4a2f-8259-978c76526ad9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Product Revenue Rank' = ```
+			
+			IF(
+			    ISINSCOPE(Dim_Products[Name]),
+			    RANKX(
+			        ALLSELECTED(Dim_Products),
+			        [Total Revenue],
+			        ,
+			        DESC
+			    ),
+			    BLANK()
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 7559db8c-dd48-4457-948f-e052cfd20d8b
+
+	measure 'Selected Performance Metric' = ```
+			
+			VAR SelectedValue = SELECTEDVALUE(Slicer_Metrics[Metric Name], "Revenue")
+			RETURN
+			SWITCH(
+			    SelectedValue,
+			    "Revenue", [Total Revenue],
+			    "Orders", [Total Orders]
+			)
+			
+			```
+		lineageTag: ad37daa6-4296-4faa-9da4-451523554e45
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

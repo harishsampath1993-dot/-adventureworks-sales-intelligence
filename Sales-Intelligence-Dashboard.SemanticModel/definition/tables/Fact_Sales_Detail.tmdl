@@ -1,0 +1,86 @@
+table Fact_Sales_Detail
+	lineageTag: afce1c97-4410-4e8e-9bff-94d6670415fa
+
+	column SalesOrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: 45dc67da-9b57-49d8-9564-09d0c27ca86b
+		summarizeBy: none
+		sourceColumn: SalesOrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderDetailID
+		dataType: int64
+		formatString: 0
+		lineageTag: 2456ede5-74b5-4b34-9dd7-b54bb5a3351e
+		summarizeBy: count
+		sourceColumn: SalesOrderDetailID
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderQty
+		dataType: int64
+		formatString: 0
+		lineageTag: 552371e2-980b-476e-b895-dcf3a93440fd
+		summarizeBy: sum
+		sourceColumn: OrderQty
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1108491f-5013-4290-986e-14486fb1ad09
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: 93003e76-5846-46b3-a273-9b995d34972a
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column UnitPriceDiscount
+		dataType: decimal
+		formatString: "₹"\ #,0.###############;#,0.###############\ -"₹";"₹"\ #,0.###############
+		lineageTag: c428680f-e44b-4f2e-8afe-b19fe3dcf7e9
+		summarizeBy: sum
+		sourceColumn: UnitPriceDiscount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-IN"}
+
+	column LineTotal
+		dataType: double
+		lineageTag: 4dbb5d38-a99e-4293-86b6-aad619acf591
+		summarizeBy: sum
+		sourceColumn: LineTotal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Fact_Sales_Detail = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Sales_SalesOrderDetail = AdventureWorks2025{[Schema="Sales",Item="SalesOrderDetail"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(Sales_SalesOrderDetail,{"SalesOrderID", "SalesOrderDetailID", "OrderQty", "ProductID", "UnitPrice", "UnitPriceDiscount", "LineTotal"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

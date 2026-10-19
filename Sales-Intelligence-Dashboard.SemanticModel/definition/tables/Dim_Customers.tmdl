@@ -1,0 +1,59 @@
+table Dim_Customers
+	lineageTag: 16b18f58-28dd-4b96-b058-754102c7cbe1
+
+	column CustomerID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: ff9b0f64-954b-4e2b-9476-51d952d72511
+		summarizeBy: count
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PersonID
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 034bb916-29a3-4540-8fc8-aaf4c74cd4ff
+		summarizeBy: none
+		sourceColumn: PersonID
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreID
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: deaf55a7-d267-4f67-8b45-ae1479cb8741
+		summarizeBy: count
+		sourceColumn: StoreID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryID
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1215de5d-ec1f-49d0-883e-61953ab1939e
+		summarizeBy: count
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Customers = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Databases("HARISH\SQLEXPRESS"),
+				    AdventureWorks2025 = Source{[Name="AdventureWorks2025"]}[Data],
+				    Sales_Customer = AdventureWorks2025{[Schema="Sales",Item="Customer"]}[Data],
+				    #"Removed Other Columns" = Table.SelectColumns(Sales_Customer,{"CustomerID", "PersonID", "StoreID", "TerritoryID"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,39 @@
+relationship 813c9d84-c79d-48bc-b47e-1aa3caf94d79
+	fromColumn: Dim_Customers.PersonID
+	toColumn: Dim_People.BusinessEntityID
+
+	annotation PBI_IsFromSource = FS
+
+relationship 6576bdb5-1a91-4f45-a141-38d2b378779e
+	fromColumn: Fact_Sales_Detail.SalesOrderID
+	toColumn: Fact_Sales_Header.SalesOrderID
+
+	annotation PBI_IsFromSource = FS
+
+relationship f90d8ad4-4cc2-45f2-9319-312e00853e93
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dim_Date.Date
+	toColumn: LocalDateTable_91cf97d0-846c-4c33-b8aa-2d646ac8ed03.Date
+
+relationship dc282cd0-915e-e6a3-50a8-5aaa092d141c
+	fromColumn: Fact_Sales_Detail.ProductID
+	toColumn: Dim_Products.ProductID
+
+relationship 9cffe95c-64c6-33da-ae5f-bbac85a90895
+	isActive: false
+	fromColumn: Fact_Sales_Header.CustomerID
+	toColumn: Dim_Customers.CustomerID
+
+relationship f7a8fc25-baae-c24d-64c7-8d477d79740e
+	fromColumn: Fact_Sales_Header.OrderDate
+	toColumn: Dim_Date.Date
+
+relationship 0fdc00fe-83b7-315e-e196-f74f0776954d
+	fromColumn: Fact_Sales_Header.TerritoryID
+	toColumn: Dim_Region.TerritoryID
+
+relationship 4af826c8-1b62-24c2-fb56-aaa07ce15193
+	isActive: false
+	fromColumn: Dim_Customers.TerritoryID
+	toColumn: Dim_Region.TerritoryID
+
